@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://localhost:3000/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Json Test</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="search">Search:</label>
+                            <input type="text" class="form-control" id="search" placeholder="Search">
+                            <!--dropdown-->
+                            <select class="form-control" id="search_dropdown" class="dropdown">
+                            </select>
+                            <!--button to view selected person-->
+                            <button type="button" class="btn btn-primary" id="view_person" style="display: none;">View
+                                Person</button>
+                            <br>
+                            <button type="button" class="btn btn-primary" id="add-person"
+                                onclick="window.location.href='/person/add'">Add Person
+                            </button>
+                            <button type="button" class="btn btn-primary" id="edit-person"
+                                onclick="window.location.href='/person/delete'">Delete Person
+                            </button>
+                            <button type="button" class="btn btn-primary" id="getId"
+                                onclick="window.location.href='/person/getid'">Get ID
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function IfNoResults() {
+            if (document.getElementById("search").textContent == "" || document.getElementById("search").textContent == " ") {
+                document.getElementById("view_person").style.display = "none";
+            }
+        }
+        document.getElementById("search").addEventListener("input", function (event) {
+            IfNoResults();
+            //search database
+            var search = $('#search').val();
+            if (search.length > 2) {
+                fetch("/api/person/search/" + search)
+                    .then(function (response) {
+                        //check if not json or plain text
+                        if (response.headers.get("content-type").includes("application/json")) {
+                            return response.json();
+                        }
+                        else {
+                            return response.text();
+                        }
+                    }
+                    ).then(function (data) {
+                        var search_dropdown = $('#search_dropdown');
+                        search_dropdown.empty();
+                        //if data.length is 0, then no results
+                        if (data.length === 0 || data.length === undefined || data.length === null || data.length === data.length > 1) {
+                            search_dropdown.append('<option value="">No results</option>');
+                        }
+                        else {
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].name !== undefined) {
+                                    if (data.name == "null") {
+                                        data.name = "unknown"
+                                    }
+                                    if (data[i].age == "null") {
+                                        data[i].age = "unknown"
+                                    }
+                                    if (data[i].sex == "null") {
+                                        data[i].sex = "unknown"
+                                    }
+                                    if (data[i].family == "null") {
+                                        data[i].family = "unknown"
+                                    }
+                                    if (data[i].phonenumber == "null") {
+                                        data[i].phonenumber = "unknown"
+                                    }
+                                    search_dropdown.append('<option value="' + data[i].id + '"><p>Name:' + data[i].name + ' </p><p> Age: ' + data[i].age + '</p></option>');
+                                    document.getElementById("view_person").style.display = "block";
+                                }
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        });
+        document.getElementById("view_person").addEventListener("click", function () {
+            var id = $('#search_dropdown').val();
+            if (id === "") {
+                alert("Please select a person");
+            }
+            else {
+                localStorage.setItem("id", id);
+                window.location.href = "/person/";
+            }
+        });
+    </script>
+</body>
+
+</html>

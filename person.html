@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://localhost:3000/style.css">
+</head>
+
+<body onload="baby()">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Json Test</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <h1 id="name"></h1>
+                            <!--age h1 and family h1 and phone number h1-->
+                            <h1 id="sex"></h1>
+                            <h1 id="age"></h1>
+                            <h1 id="family"></h1>
+                            <h1 id="phone"></h1>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="add-person"
+                            onclick="window.location.href='/'">Go Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function baby() {
+            var id = localStorage.getItem("id");
+            fetch('/api/person/' + id + "/?key=j9qomS9NTtTBnEFLDMKOkSOD")
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (data.name == "null") {
+                        data.name = "unknown"
+                    }
+                    if (data.age == "null") {
+                        data.age = "unknown"
+                    }
+                    if (data.sex == "null") {
+                        data.sex = "unknown"
+                    }
+                    if (data.family == "null") {
+                        data.family = "unknown"
+                    }
+                    if (data.phonenumber == "null") {
+                        data.phonenumber = "unknown"
+                    }
+                    document.getElementById("name").innerHTML = data.name;
+                    document.getElementById("age").innerHTML = data.age;
+                    document.getElementById("sex").innerHTML = data.sex;
+                    document.getElementById("family").innerHTML = data.family;
+                    document.getElementById("phone").innerHTML = data.phonenumber;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+        window.onbeforeunload = function () {
+            localStorage.removeItem("id");
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://localhost:3000/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <!--register form with name age family seperated with comma and phonenumber-->
+
+                <div class="form-group">
+                    <label for="id">ID:</label>
+                    <input type="text" class="form-control" id="id" placeholder="ID">
+                    <button class="btn btn-primary" onclick="del()">Submit</button>
+                    <button class="btn btn-primary" onclick="back()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            function del() {
+                var id = document.getElementById("id").value;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("id").value = "";
+                        alert("Person Deleted");
+                    }
+                };
+                xhttp.open("DELETE", "/api/person/delete/" + id + "/?key=j9qomS9NTtTBnEFLDMKOkSOD", true);
+                xhttp.send();
+            }
+            function back() {
+                window.location.href = "/";
+            }
+        </script>
+</body>
+
+</html>
